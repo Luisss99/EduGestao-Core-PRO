@@ -1,132 +1,154 @@
 import React from 'react';
-import { Search, Sun, Moon, LogOut, User } from 'lucide-react';
+import { Search, Sun, Moon, LogOut, User, Bell } from 'lucide-react';
 
 export default function Navbar({ 
   user, 
   onLogout, 
+  onOpenProfile,
   searchQuery, 
   setSearchQuery, 
   isDarkMode, 
-  setIsDarkMode,
-  onOpenStudentModal
+  setIsDarkMode
 }) {
   return (
     <header style={{
-      marginLeft: '260px',
-      height: '70px',
-      background: 'var(--bg-secondary)',
-      borderBottom: '1px solid var(--border-color)',
+      marginLeft: '240px',
+      height: '76px',
+      background: 'var(--bg-primary)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 28px',
+      padding: '0 32px',
       position: 'sticky',
       top: 0,
       zIndex: 40
     }}>
-      {/* Quick Search */}
-      <div style={{ position: 'relative', width: '380px' }}>
-        <Search 
-          size={18} 
-          style={{ 
-            position: 'absolute', 
-            left: '14px', 
-            top: '50%', 
-            transform: 'translateY(-50%)', 
-            color: 'var(--text-muted)' 
-          }} 
-        />
-        <input
-          type="text"
-          placeholder="Buscar aluno por Nome ou CPF..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="form-control"
-          style={{
-            paddingLeft: '42px',
-            borderRadius: 'var(--radius-full)',
-            background: 'var(--bg-primary)',
-            fontSize: '0.875rem'
-          }}
-        />
-      </div>
+      {/* Title */}
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff' }}>
+        Students
+      </h2>
 
       {/* Right Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {/* Quick Search Input */}
+        <div style={{ position: 'relative', width: '380px' }}>
+          <Search 
+            size={16} 
+            style={{ 
+              position: 'absolute', 
+              left: '16px', 
+              top: '50%', 
+              transform: 'translateY(-50%)', 
+              color: '#94a3b8' 
+            }} 
+          />
+          <input
+            type="text"
+            placeholder="Search for students/teachers/documents..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 16px 10px 42px',
+              borderRadius: '9999px',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              fontSize: '0.875rem',
+              color: '#1e293b',
+              outline: 'none',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
+            }}
+          />
+        </div>
+
         {/* Theme Toggle */}
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
-          className="btn-icon"
           title={isDarkMode ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'}
           style={{
             width: '38px',
             height: '38px',
             borderRadius: '50%',
-            background: 'var(--bg-input)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: '#64748b'
           }}
         >
-          {isDarkMode ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} />}
+          {isDarkMode ? <Sun size={18} style={{ color: '#f59e0b' }} /> : <Moon size={18} />}
         </button>
 
-        {/* Admin User Chip */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '6px 14px 6px 8px',
-          background: 'var(--bg-input)',
-          borderRadius: 'var(--radius-full)',
-          border: '1px solid var(--border-color)'
-        }}>
+        {/* Notification Bell Badge */}
+        <div style={{ position: 'relative' }}>
+          <button style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: '#64748b'
+          }}>
+            <Bell size={18} />
+          </button>
+          <span style={{
+            position: 'absolute',
+            top: '-2px',
+            right: '-2px',
+            background: '#f43f5e',
+            color: '#ffffff',
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            width: '16px',
+            height: '16px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px solid var(--bg-primary)'
+          }}>
+            4
+          </span>
+        </div>
+
+        {/* User Profile Avatar Pill */}
+        <div 
+          onClick={onOpenProfile}
+          title="Editar perfil do administrador"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            cursor: 'pointer'
+          }}
+        >
           {user?.avatar ? (
             <img 
               src={user.avatar} 
               alt={user.name} 
-              style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} 
+              style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ffffff' }} 
             />
           ) : (
             <div style={{
-              width: '32px',
-              height: '32px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
-              background: 'var(--primary)',
+              background: '#3b82f6',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff'
             }}>
-              <User size={16} />
+              <User size={18} />
             </div>
           )}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, lineHeight: 1.2 }}>{user?.name || 'Administrador'}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{user?.role || 'Secretária'}</span>
-          </div>
         </div>
-
-        {/* Logout */}
-        <button
-          onClick={onLogout}
-          className="btn-icon"
-          title="Sair do sistema"
-          style={{
-            color: '#f87171',
-            background: 'rgba(244, 63, 94, 0.1)',
-            padding: '8px 12px',
-            borderRadius: 'var(--radius-sm)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.8125rem',
-            fontWeight: 600
-          }}
-        >
-          <LogOut size={16} />
-          Sair
-        </button>
       </div>
     </header>
   );

@@ -12,7 +12,10 @@ import {
   Edit, 
   CheckCircle2, 
   XCircle, 
-  AlertCircle 
+  AlertCircle,
+  ShieldCheck,
+  Download,
+  UserX
 } from 'lucide-react';
 import { calculateAverage } from '../../utils/storage';
 
@@ -23,7 +26,9 @@ export default function StudentDetailModal({
   classes = [], 
   courses = [], 
   grades = [],
-  onEditStudent
+  onEditStudent,
+  onExportStudentLgpd,
+  onAnonymizeStudent
 }) {
   if (!student) return null;
 
@@ -220,6 +225,82 @@ export default function StudentDetailModal({
               </table>
             </div>
           )}
+        </div>
+
+        {/* LGPD & Privacidade do Titular */}
+        <div style={{
+          marginTop: '24px',
+          padding: '16px',
+          background: 'rgba(99, 102, 241, 0.05)',
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid rgba(99, 102, 241, 0.2)'
+        }}>
+          <h4 style={{
+            fontSize: '0.9375rem',
+            fontWeight: 700,
+            marginBottom: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: '#818cf8'
+          }}>
+            <ShieldCheck size={18} /> CONFORMIDADE LGPD & DIREITOS DO TITULAR
+          </h4>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '12px',
+            fontSize: '0.8125rem',
+            marginBottom: '14px'
+          }}>
+            <div>
+              <span style={{ color: 'var(--text-muted)' }}>Base Legal de Tratamento:</span>{' '}
+              <strong>{student.lgpdConsent?.legalBasis || 'Execução de Contrato'}</strong>
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-muted)' }}>Status de Consentimento:</span>{' '}
+              <span style={{ color: student.lgpdConsent?.consentAccepted ? '#34d399' : '#f87171', fontWeight: 600 }}>
+                {student.lgpdConsent?.consentAccepted ? '✓ Confirmado / Ativo' : '✕ Não Registrado'}
+              </span>
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-muted)' }}>Data do Aceite:</span>{' '}
+              <strong>
+                {student.lgpdConsent?.consentDate 
+                  ? new Date(student.lgpdConsent.consentDate).toLocaleDateString('pt-BR') 
+                  : 'N/A'}
+              </strong>
+            </div>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            gap: '10px',
+            flexWrap: 'wrap',
+            paddingTop: '12px',
+            borderTop: '1px solid var(--border-color)'
+          }}>
+            <button
+              className="btn btn-secondary"
+              onClick={() => onExportStudentLgpd(student)}
+              style={{ fontSize: '0.8125rem', padding: '6px 12px' }}
+              title="Exportar dossiê completo de dados pessoais em formato JSON (Portabilidade LGPD)"
+            >
+              <Download size={15} /> Exportar Dossiê Pessoal (JSON)
+            </button>
+
+            {!student.isAnonymized && (
+              <button
+                className="btn btn-danger"
+                onClick={() => onAnonymizeStudent(student)}
+                style={{ fontSize: '0.8125rem', padding: '6px 12px' }}
+                title="Anonimizar permanentemente os dados pessoais do aluno nos termos do Art. 16 da LGPD"
+              >
+                <UserX size={15} /> Solicitar Anonimização / Direito ao Esquecimento
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GraduationCap, ShieldCheck, KeyRound, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import { formatCPF, cleanCPF } from '../../utils/cpfValidator';
 
-export default function LoginView({ onLogin }) {
+export default function LoginView({ onLogin, onOpenTerms }) {
   const [identifier, setIdentifier] = useState('admin@edugestao.com');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
@@ -151,9 +151,23 @@ export default function LoginView({ onLogin }) {
         </form>
 
         <div style={{ marginTop: '24px', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginBottom: '8px' }}>
             Dica para teste: Utilize o e-mail ou CPF e qualquer senha.
           </p>
+          <button
+            type="button"
+            onClick={onOpenTerms}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#818cf8',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              textDecoration: 'underline'
+            }}
+          >
+            Termos de Uso & Política de Privacidade (LGPD)
+          </button>
         </div>
       </div>
     </div>

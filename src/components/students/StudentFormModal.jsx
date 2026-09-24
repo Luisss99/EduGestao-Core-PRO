@@ -13,6 +13,10 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
   const [status, setStatus] = useState('Ativo');
   const [address, setAddress] = useState('');
 
+  // LGPD Fields
+  const [legalBasis, setLegalBasis] = useState('Execução de Contrato');
+  const [consentAccepted, setConsentAccepted] = useState(true);
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -25,6 +29,8 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
       setPhoto(studentToEdit.photo || '');
       setStatus(studentToEdit.status || 'Ativo');
       setAddress(studentToEdit.address || '');
+      setLegalBasis(studentToEdit.lgpdConsent?.legalBasis || 'Execução de Contrato');
+      setConsentAccepted(studentToEdit.lgpdConsent?.consentAccepted ?? true);
     } else {
       setFullName('');
       setCpf('');
@@ -34,6 +40,8 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
       setPhoto('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80');
       setStatus('Ativo');
       setAddress('');
+      setLegalBasis('Execução de Contrato');
+      setConsentAccepted(true);
     }
     setErrors({});
   }, [studentToEdit, isOpen]);
@@ -82,6 +90,10 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
       errs.email = 'E-mail é obrigatório.';
     }
 
+    if (!consentAccepted) {
+      errs.consent = 'É necessário registrar o aceite dos termos de privacidade (LGPD).';
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -101,7 +113,14 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
       status,
       address,
       enrolledClassIds: studentToEdit ? studentToEdit.enrolledClassIds : [],
-      createdAt: studentToEdit ? studentToEdit.createdAt : new Date().toISOString().split('T')[0]
+      createdAt: studentToEdit ? studentToEdit.createdAt : new Date().toISOString().split('T')[0],
+      lgpdConsent: {
+        legalBasis,
+        consentAccepted,
+        consentDate: studentToEdit?.lgpdConsent?.consentDate || new Date().toISOString(),
+        consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+      },
+      isAnonymized: studentToEdit?.isAnonymized || false
     });
   };
 
@@ -248,7 +267,7 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ gridColumn: 'span 2' }}>
             <label className="form-label">Endereço Residencial</label>
             <input
               type="text"
@@ -258,6 +277,48 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
               className="form-control"
             />
           </div>
+        </div>
+
+        {/* Seção LGPD - Privacidade & Consentimento */}
+        <div style={{
+          marginTop: '20px',
+          padding: '16px',
+          background: 'rgba(99, 102, 241, 0.05)',
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid rgba(99, 102, 241, 0.2)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: '#818cf8', fontWeight: 700, fontSize: '0.875rem' }}>
+            <AlertCircle size={16} /> Proteção de Dados (LGPD - Lei 13.709/2018)
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
+            <div className="form-group" style={{ gridColumn: 'span 2' }}>
+              <label className="form-label">Hipotética Base Legal para Tratamento *</label>
+              <select
+                value={legalBasis}
+                onChange={(e) => setLegalBasis(e.target.value)}
+                className="form-control"
+              >
+                <option value="Execução de Contrato">Execução de Contrato (Prestação de Serviços Educacionais)</option>
+                <option value="Consentimento">Consentimento Expresso do Titular / Responsável</option>
+                <option value="Legítimo Interesse">Legítimo Interesse da Instituição de Ensino</option>
+                <option value="Cumprimento de Obrigação Legal">Cumprimento de Obrigação Legal / Regulatória (MEC)</option>
+              </select>
+            </div>
+          </div>
+
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', fontSize: '0.8125rem', color: 'var(--text-main)' }}>
+            <input
+              type="checkbox"
+              checked={consentAccepted}
+              onChange={(e) => setConsentAccepted(e.target.checked)}
+              style={{ marginTop: '3px', accentColor: 'var(--primary)' }}
+            />
+            <span>
+              O aluno (ou seu responsável legal) declara <strong>ciência e aceite</strong> dos termos de tratamento de dados pessoais para fins exclusivos de gestão acadêmica e emissão de certificados/boletins.
+            </span>
+          </label>
+          {errors.consent && <div className="error-text" style={{ marginTop: '6px' }}>{errors.consent}</div>}
         </div>
 
         <div style={{

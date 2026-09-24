@@ -82,7 +82,14 @@ export const INITIAL_STUDENTS = [
     status: 'Ativo', // Ativo, Trancado, Concluído, Cancelado
     address: 'Av. Paulista, 1500 - São Paulo, SP',
     enrolledClassIds: ['trm-2026-1a'],
-    createdAt: '2026-01-10'
+    createdAt: '2026-01-10',
+    lgpdConsent: {
+      legalBasis: 'Execução de Contrato', // Execução de Contrato, Consentimento, Legítimo Interesse
+      consentAccepted: true,
+      consentDate: '2026-01-10T10:00:00.000Z',
+      consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+    },
+    isAnonymized: false
   },
   {
     id: 'aln-102',
@@ -95,7 +102,14 @@ export const INITIAL_STUDENTS = [
     status: 'Ativo',
     address: 'Rua das Flores, 320 - Rio de Janeiro, RJ',
     enrolledClassIds: ['trm-2026-1b'],
-    createdAt: '2026-01-12'
+    createdAt: '2026-01-12',
+    lgpdConsent: {
+      legalBasis: 'Consentimento',
+      consentAccepted: true,
+      consentDate: '2026-01-12T14:30:00.000Z',
+      consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+    },
+    isAnonymized: false
   },
   {
     id: 'aln-103',
@@ -108,7 +122,14 @@ export const INITIAL_STUDENTS = [
     status: 'Trancado',
     address: 'Rua Bahia, 88 - Belo Horizonte, MG',
     enrolledClassIds: ['trm-2026-1a'],
-    createdAt: '2025-08-15'
+    createdAt: '2025-08-15',
+    lgpdConsent: {
+      legalBasis: 'Execução de Contrato',
+      consentAccepted: true,
+      consentDate: '2025-08-15T09:15:00.000Z',
+      consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+    },
+    isAnonymized: false
   },
   {
     id: 'aln-104',
@@ -121,7 +142,14 @@ export const INITIAL_STUDENTS = [
     status: 'Concluído',
     address: 'Rua XV de Novembro, 450 - Curitiba, PR',
     enrolledClassIds: ['trm-2026-1c'],
-    createdAt: '2024-02-01'
+    createdAt: '2024-02-01',
+    lgpdConsent: {
+      legalBasis: 'Legítimo Interesse',
+      consentAccepted: true,
+      consentDate: '2024-02-01T11:20:00.000Z',
+      consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+    },
+    isAnonymized: false
   },
   {
     id: 'aln-105',
@@ -134,7 +162,14 @@ export const INITIAL_STUDENTS = [
     status: 'Cancelado',
     address: 'Orla Marítima, 12 - Salvador, BA',
     enrolledClassIds: [],
-    createdAt: '2025-03-10'
+    createdAt: '2025-03-10',
+    lgpdConsent: {
+      legalBasis: 'Consentimento',
+      consentAccepted: true,
+      consentDate: '2025-03-10T16:00:00.000Z',
+      consentText: 'Autorizo o tratamento dos meus dados pessoais para fins estritamente educacionais e de gestão acadêmica nos termos da LGPD (Lei nº 13.709/2018).'
+    },
+    isAnonymized: false
   }
 ];
 
