@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
-import { Camera, User, AlertCircle, Save } from 'lucide-react';
+import { Camera, User, AlertCircle, Save, Loader2, Search } from 'lucide-react';
 import { formatCPF, validateCPF } from '../../utils/cpfValidator';
+import { fetchAddressByCEP } from '../../services/viaCepService';
 
 export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdit = null, existingCpfs = [] }) {
+
   const [fullName, setFullName] = useState('');
   const [cpf, setCpf] = useState('');
   const [email, setEmail] = useState('');
@@ -11,7 +13,11 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
   const [birthDate, setBirthDate] = useState('');
   const [photo, setPhoto] = useState('');
   const [status, setStatus] = useState('Ativo');
+  const [cep, setCep] = useState('');
   const [address, setAddress] = useState('');
+  const [loadingCep, setLoadingCep] = useState(false);
+  const [cepError, setCepError] = useState('');
+
 
   // LGPD Fields
   const [legalBasis, setLegalBasis] = useState('Execução de Contrato');
@@ -39,14 +45,43 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
       setBirthDate('');
       setPhoto('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80');
       setStatus('Ativo');
+      setCep('');
       setAddress('');
+      setCepError('');
       setLegalBasis('Execução de Contrato');
       setConsentAccepted(true);
     }
     setErrors({});
   }, [studentToEdit, isOpen]);
 
+  const handleCepSearch = async (cepValue) => {
+    const rawCep = cepValue.replace(/\D/g, '');
+    if (rawCep.length === 8) {
+      setLoadingCep(true);
+      setCepError('');
+      const result = await fetchAddressByCEP(rawCep);
+      setLoadingCep(false);
+      if (result.error) {
+        setCepError(result.error);
+      } else {
+        setAddress(result.fullAddress);
+      }
+    }
+  };
+
+  const handleCepChange = (e) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 8) val = val.slice(0, 8);
+    const formatted = val.length > 5 ? `${val.slice(0, 5)}-${val.slice(5)}` : val;
+    setCep(formatted);
+    setCepError('');
+    if (val.length === 8) {
+      handleCepSearch(val);
+    }
+  };
+
   const handleCpfChange = (e) => {
+
     const formatted = formatCPF(e.target.value);
     setCpf(formatted);
     if (errors.cpf) {
@@ -267,8 +302,31 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
             />
           </div>
 
+          <div className="form-group">
+            <label className="form-label">CEP (Busca Automática ViaCEP)</label>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder="00000-000"
+                value={cep}
+                onChange={handleCepChange}
+                maxLength={9}
+                className="form-control"
+                style={{ paddingRight: '36px', fontFamily: 'var(--font-mono)' }}
+              />
+              <div style={{ position: 'absolute', right: '10px', color: 'var(--text-muted)' }}>
+                {loadingCep ? (
+                  <Loader2 size={16} className="spin" style={{ animation: 'spin 1s linear infinite' }} />
+                ) : (
+                  <Search size={16} />
+                )}
+              </div>
+            </div>
+            {cepError && <span className="error-text">{cepError}</span>}
+          </div>
+
           <div className="form-group" style={{ gridColumn: 'span 2' }}>
-            <label className="form-label">Endereço Residencial</label>
+            <label className="form-label">Endereço Residencial (Autopreenchido pelo CEP)</label>
             <input
               type="text"
               placeholder="Rua, Número, Bairro, Cidade - UF"
@@ -277,6 +335,7 @@ export default function StudentFormModal({ isOpen, onClose, onSave, studentToEdi
               className="form-control"
             />
           </div>
+
         </div>
 
         {/* Seção LGPD - Privacidade & Consentimento */}
