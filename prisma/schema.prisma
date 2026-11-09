@@ -1,0 +1,120 @@
+// Prisma Schema para Sistema SaaS de Gestão Escolar Administrativa
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("SECRETARY") // ADMIN, SECRETARY
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Student {
+  id           String       @id @default(uuid())
+  fullName     String
+  cpf          String       @unique // 11 dígitos limpos
+  email        String
+  phone        String
+  birthDate    DateTime
+  zipCode      String
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  enrollments  Enrollment[]
+
+  @@index([fullName])
+  @@index([cpf])
+}
+
+model Course {
+  id             String       @id @default(uuid())
+  name           String
+  code           String       @unique
+  description    String
+  workloadHours  Int
+  monthlyFee     Float
+  durationMonths Int
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  subjects       Subject[]
+  enrollments    Enrollment[]
+}
+
+model Subject {
+  id            String   @id @default(uuid())
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name          String
+  workloadHours Int
+  syllabus      String
+  createdAt     DateTime @default(now())
+  grades        Grade[]
+}
+
+model Enrollment {
+  id                 String           @id @default(uuid())
+  registrationNumber String           @unique // Padrão MAT-2026-XXXX
+  studentId          String
+  student            Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId           String
+  course             Course           @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  startDate          DateTime         @default(now())
+  status             String           @default("ACTIVE") // ACTIVE, LOCKED, COMPLETED, CANCELED
+  cancellationReason String?
+  createdAt          DateTime         @default(now())
+  invoices           Invoice[]
+  grades             Grade[]
+
+  @@index([registrationNumber])
+}
+
+model Grade {
+  id           String     @id @default(uuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  subjectId    String
+  subject      Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  term         String     // Ex: "1º Bimestre", "2º Bimestre", "Módulo 1"
+  score        Float      // Nota obtida (ex: 8.5)
+  maxScore     Float      @default(10.0) // Nota máxima
+  absences     Int        @default(0) // Quantidade de faltas
+  feedback     String?    // Parecer pedagógico / observações
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([enrollmentId])
+  @@index([subjectId])
+}
+
+model Invoice {
+  id                String        @id @default(uuid())
+  enrollmentId      String
+  enrollment        Enrollment    @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  installmentNumber Int
+  dueDate           DateTime
+  amount            Float
+  status            String        @default("PENDING") // PENDING, PAID, OVERDUE, CANCELED
+  paidAt            DateTime?
+  paymentMethod     String?       // PIX, BOLETO, CREDIT_CARD, CASH
+  barcode           String?
+  receiptUrl        String?
+  createdAt         DateTime      @default(now())
+
+  @@index([dueDate])
+  @@index([status])
+}
