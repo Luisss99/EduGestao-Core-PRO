@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Sun, Moon, Bell, Plus, GraduationCap, UserPlus } from 'lucide-react';
+import { Search, Sun, Moon, GraduationCap, UserPlus } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import Link from 'next/link';
 
@@ -57,15 +57,6 @@ export function Header() {
           ) : (
             <Moon className="h-4 w-4 text-indigo-600" />
           )}
-        </button>
-
-        {/* Notifications */}
-        <button
-          className="relative flex h-9 w-9 items-center justify-center rounded-lg border bg-background text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-          title="Notificações do Sistema"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-background" />
         </button>
       </div>
     </header>
