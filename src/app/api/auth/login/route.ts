@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     if (cleanEmail === 'admin@escola.com.br' && password === '123456') {
       const adminSession = JSON.stringify({
         id: 'admin-fixed-id',
-        name: 'Carlos Andrade (Admin)',
+        name: 'Admin',
         email: 'admin@escola.com.br',
         role: 'ADMIN',
       });
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         success: true,
         user: {
           id: 'admin-fixed-id',
-          name: 'Carlos Andrade (Admin)',
+          name: 'Admin',
           email: 'admin@escola.com.br',
           role: 'ADMIN',
         },
