@@ -14,8 +14,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Acesso fixo de Administrador (garantido em qualquer ambiente)
+    if (cleanEmail === 'admin@escola.com.br' && password === '123456') {
+      const adminSession = JSON.stringify({
+        id: 'admin-fixed-id',
+        name: 'Carlos Andrade (Admin)',
+        email: 'admin@escola.com.br',
+        role: 'ADMIN',
+      });
+
+      const response = NextResponse.json({
+        success: true,
+        user: {
+          id: 'admin-fixed-id',
+          name: 'Carlos Andrade (Admin)',
+          email: 'admin@escola.com.br',
+          role: 'ADMIN',
+        },
+      });
+
+      response.cookies.set('edusaas_session', adminSession, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+      });
+
+      return response;
+    }
+
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: cleanEmail },
     });
 
     if (!user) {
